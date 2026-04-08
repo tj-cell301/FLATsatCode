@@ -23,8 +23,8 @@ from picamera2 import Picamera2
 
 #VARIABLES
 THRESHOLD = 0      #Any desired value from the accelerometer
-REPO_PATH = ""     #Your github repo path: ex. /home/pi/FlatSatChallenge
-FOLDER_PATH = ""   #Your image folder path in your GitHub repo: ex. /Images
+REPO_PATH = "/home/pi/FlatSat_student"     #Your github repo path: ex. /home/pi/FlatSatChallenge
+FOLDER_PATH = "/Images"   #Your image folder path in your GitHub repo: ex. /Images
 
 #imu and camera initialization
 i2c = board.I2C()
@@ -32,6 +32,8 @@ accel_gyro = LSM6DS(i2c)
 mag = LIS3MDL(i2c)
 picam2 = Picamera2()
 
+picam2.configure(picam2.create_preview_configuration())
+picam2.start()
 
 def git_push():
     """
@@ -72,13 +74,40 @@ def take_photo():
     while True:
         accelx, accely, accelz = accel_gyro.acceleration
 
-        #CHECKS IF READINGS ARE ABOVE THRESHOLD
-            #PAUSE
-            #name = ""     #First Name, Last Initial  ex. MasonM
-            #TAKE PHOTO
-            #PUSH PHOTO TO GITHUB
+
+        """Takes a photo when the FlatSat is shaken."""
+    print("Monitoring IMU for shake...")
+    while True:
+        # Read acceleration data
+        accelx, accely, accelz = accel_gyro.acceleration
         
-        #PAUSE
+        # Calculate the total magnitude of acceleration
+        # magnitude = sqrt(x^2 + y^2 + z^2)
+        mag_accel = math.sqrt(accelx**2 + accely**2 + accelz**2)
+
+        # CHECKS IF READINGS ARE ABOVE THRESHOLD
+        if mag_accel > THRESHOLD:
+            print(f"Shake detected! Magnitude: {mag_accel:.2f}")
+            
+            # PAUSE to let the camera stabilize if needed
+            time.sleep(0.5)
+            
+            # Generate filename
+            name = "YourName" # Replace with your name
+            filename = img_gen(name)
+            
+            # TAKE PHOTO
+            picam2.capture_file(filename)
+            print(f"Photo saved as {filename}")
+            
+            # PUSH PHOTO TO GITHUB
+            git_push()
+            
+            # PAUSE so it doesn't trigger 100 times during one shake
+            time.sleep(5)
+        
+        # Small delay to prevent CPU maxing out
+        time.sleep(0.1)
 
 
 def main():
