@@ -22,8 +22,8 @@ from git import Repo
 from picamera2 import Picamera2
 
 #VARIABLES
-THRESHOLD = 0      #Any desired value from the accelerometer
-REPO_PATH = "/home/pi/FlatSat_student"     #Your github repo path: ex. /home/pi/FlatSatChallenge
+THRESHOLD = 10      #Any desired value from the accelerometer
+REPO_PATH = "/home/pi/FlatSat_student (1)"     #Your github repo path: ex. /home/pi/FlatSatChallenge
 FOLDER_PATH = "/Images"   #Your image folder path in your GitHub repo: ex. /Images
 
 #imu and camera initialization
@@ -82,7 +82,7 @@ def take_photo():
         accelx, accely, accelz = accel_gyro.acceleration
         
         # Calculate the total magnitude of acceleration
-        # magnitude = sqrt(x^2 + y^2 + z^2)
+        magnitude = sqrt(x^2 + y^2 + z^2)
         mag_accel = math.sqrt(accelx**2 + accely**2 + accelz**2)
 
         # CHECKS IF READINGS ARE ABOVE THRESHOLD
