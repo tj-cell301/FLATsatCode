@@ -87,10 +87,10 @@ def take_photo():
             print(f"Shake detected! Magnitude: {mag_accel:.2f}")
             
             # PAUSE to let the camera stabilize if needed
-            time.sleep(0.5)
+            time.sleep(3)
             
             # Generate filename
-            name = "YourName" # Replace with your name
+            name = "Dolphins" # Replace with your name
             filename = img_gen(name)
             
             # TAKE PHOTO
