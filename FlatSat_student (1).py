@@ -42,29 +42,29 @@ def git_push():
     """
     try:
         import os
+        import subprocess
         os.chdir(REPO_PATH)
         repo = Repo('.')
         
-        # Check for untracked files
-        untracked = repo.untracked_files
-        print(f'found {len(untracked)} untracked files')
+        # Fetch latest from remote
+        origin = repo.remote('origin')
+        origin.fetch()
+        print('fetched from origin')
         
         # Add new photos
         repo.git.add('Images/*.jpg')
         
-        # Check if there are changes to commit
+        # Check if there are changes
+        untracked = repo.untracked_files
         if repo.index.diff('HEAD') or untracked:
+            # Reset to origin/main to sync
+            repo.git.reset('--hard', 'origin/main')
+            print('reset to origin/main')
+            
+            # Add photos again after reset
+            repo.git.add('Images/*.jpg')
             repo.index.commit('New Photo')
             print('made the commit')
-            
-            origin = repo.remote('origin')
-            
-            # Pull latest changes first
-            try:
-                origin.pull()
-                print('pulled latest changes')
-            except:
-                print('pull had conflicts, continuing...')
             
             # Push to remote
             origin.push()
