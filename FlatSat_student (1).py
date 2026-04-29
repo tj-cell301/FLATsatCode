@@ -15,6 +15,7 @@ You will need to complete the take_photo() function and configure the VARIABLES 
 
 #import libraries
 import time
+import math
 import board
 from adafruit_lsm6ds.lsm6dsox import LSM6DSOX as LSM6DS
 from adafruit_lis3mdl import LIS3MDL
@@ -45,13 +46,13 @@ def git_push():
         print('added remote')
         origin.pull()
         print('pulled changes')
-        repo.git.add(REPO_PATH + FOLDER_PATH)
+        repo.git.add(REPO_PATH + '/' + FOLDER_PATH)
         repo.index.commit('New Photo')
         print('made the commit')
         origin.push()
         print('pushed changes')
-    except:
-        print('Couldn\'t upload to git')
+    except Exception as e:
+        print(f'Couldn\'t upload to git: {e}')
 
 
 def img_gen(name):
@@ -71,18 +72,12 @@ def take_photo():
     This function is NOT complete. Takes a photo when the FlatSat is shaken.
     Replace psuedocode with your own code.
     """
-    while True:
-        accelx, accely, accelz = accel_gyro.acceleration
-
-
-        """Takes a photo when the FlatSat is shaken."""
     print("Monitoring IMU for shake...")
     while True:
         # Read acceleration data
         accelx, accely, accelz = accel_gyro.acceleration
         
         # Calculate the total magnitude of acceleration
-        magnitude = sqrt(x^2 + y^2 + z^2)
         mag_accel = math.sqrt(accelx**2 + accely**2 + accelz**2)
 
         # CHECKS IF READINGS ARE ABOVE THRESHOLD
@@ -91,7 +86,7 @@ def take_photo():
             
             # PAUSE to let the camera stabilize if needed
             print("⏳ Stabilizing camera...")
-            time.sleep(15)
+            time.sleep(1)
             
             # Generate filename
             name = "Dolphins" # Replace with your name
