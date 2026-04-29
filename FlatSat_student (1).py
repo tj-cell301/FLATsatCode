@@ -62,7 +62,7 @@ def img_gen(name):
     Parameters:
         name (str): your name ex. MasonM
     """
-    t = time.strftime("_%H%M%S")
+    t = time.strftime("_%H:%M:%S_%b_%-d_%Y")
     imgname = (f'{REPO_PATH}/{FOLDER_PATH}/{name}{t}.jpg')
     return imgname
 
@@ -104,7 +104,7 @@ def take_photo():
             
             # PAUSE so it doesn't trigger 100 times during one shake
             print("⏸️  Waiting before next detection...\n")
-            time.sleep(5)
+            time.sleep(20)
         
         # Small delay to prevent CPU maxing out
         time.sleep(0.1)
