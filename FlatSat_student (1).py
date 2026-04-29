@@ -91,10 +91,10 @@ def take_photo():
             
             # PAUSE to let the camera stabilize if needed
             print("⏳ Stabilizing camera...")
-            time.sleep(0.5)
+            time.sleep(15)
             
             # Generate filename
-            name = "YourName" # Replace with your name
+            name = "Dolphins" # Replace with your name
             filename = img_gen(name)
             print(f"📸 Capturing photo: {filename}")
             
