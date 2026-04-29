@@ -41,26 +41,27 @@ def git_push():
     This function is complete. Stages, commits, and pushes new images to your GitHub repo.
     """
     try:
-        repo = Repo(REPO_PATH)
-        origin = repo.remote('origin')
-        print('added remote')
+        import os
+        os.chdir(REPO_PATH)
+        repo = Repo('.')
         
-        # Fetch latest changes
-        origin.fetch()
-        print('fetched changes')
+        # Check for untracked files
+        untracked = repo.untracked_files
+        print(f'found {len(untracked)} untracked files')
         
-        # Add all new photos
+        # Add new photos
         repo.git.add('Images/*.jpg')
-        repo.index.commit('New Photo')
-        print('made the commit')
         
-        # Rebase on remote changes before pushing
-        repo.git.rebase('origin/main')
-        print('rebased with origin')
-        
-        # Push to remote
-        origin.push()
-        print('pushed changes')
+        # Check if there are changes to commit
+        if repo.index.diff('HEAD') or untracked:
+            repo.index.commit('New Photo')
+            print('made the commit')
+            
+            origin = repo.remote('origin')
+            origin.push()
+            print('pushed changes')
+        else:
+            print('no new changes to push')
     except Exception as e:
         print(f'Couldn\'t upload to git: {e}')
 
