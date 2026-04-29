@@ -49,8 +49,8 @@ def git_push():
         origin.fetch()
         print('fetched changes')
         
-        # Add new photos
-        repo.git.add(FOLDER_PATH)
+        # Add all new photos
+        repo.git.add('Images/*.jpg')
         repo.index.commit('New Photo')
         print('made the commit')
         
