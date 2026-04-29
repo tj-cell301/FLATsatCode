@@ -44,9 +44,21 @@ def git_push():
         repo = Repo(REPO_PATH)
         origin = repo.remote('origin')
         print('added remote')
+        
+        # Fetch latest changes
+        origin.fetch()
+        print('fetched changes')
+        
+        # Add new photos
         repo.git.add(FOLDER_PATH)
         repo.index.commit('New Photo')
         print('made the commit')
+        
+        # Rebase on remote changes before pushing
+        repo.git.rebase('origin/main')
+        print('rebased with origin')
+        
+        # Push to remote
         origin.push()
         print('pushed changes')
     except Exception as e:
