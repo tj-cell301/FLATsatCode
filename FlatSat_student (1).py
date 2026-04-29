@@ -44,8 +44,6 @@ def git_push():
         repo = Repo(REPO_PATH)
         origin = repo.remote('origin')
         print('added remote')
-        origin.pull()
-        print('pulled changes')
         repo.git.add(FOLDER_PATH)
         repo.index.commit('New Photo')
         print('made the commit')
