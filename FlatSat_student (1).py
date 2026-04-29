@@ -24,7 +24,7 @@ from picamera2 import Picamera2
 #VARIABLES
 THRESHOLD = 10      #Any desired value from the accelerometer
 REPO_PATH = "/home/pi/FlatSat_student (1)"     #Your github repo path: ex. /home/pi/FlatSatChallenge
-FOLDER_PATH = "/Images"   #Your image folder path in your GitHub repo: ex. /Images
+FOLDER_PATH = "Images"   #Your image folder path in your GitHub repo: ex. /Images
 
 #imu and camera initialization
 i2c = board.I2C()
@@ -87,23 +87,28 @@ def take_photo():
 
         # CHECKS IF READINGS ARE ABOVE THRESHOLD
         if mag_accel > THRESHOLD:
-            print(f"Shake detected! Magnitude: {mag_accel:.2f}")
+            print(f"\n🎯 Shake detected! Magnitude: {mag_accel:.2f}")
             
             # PAUSE to let the camera stabilize if needed
+            print("⏳ Stabilizing camera...")
             time.sleep(0.5)
             
             # Generate filename
             name = "YourName" # Replace with your name
             filename = img_gen(name)
+            print(f"📸 Capturing photo: {filename}")
             
             # TAKE PHOTO
             picam2.capture_file(filename)
-            print(f"Photo saved as {filename}")
+            print(f"✅ Photo saved successfully!")
             
             # PUSH PHOTO TO GITHUB
+            print("🚀 Pushing to GitHub...")
             git_push()
+            print("✨ Upload complete!")
             
             # PAUSE so it doesn't trigger 100 times during one shake
+            print("⏸️  Waiting before next detection...\n")
             time.sleep(5)
         
         # Small delay to prevent CPU maxing out
