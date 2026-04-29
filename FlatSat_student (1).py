@@ -58,6 +58,15 @@ def git_push():
             print('made the commit')
             
             origin = repo.remote('origin')
+            
+            # Pull latest changes first
+            try:
+                origin.pull()
+                print('pulled latest changes')
+            except:
+                print('pull had conflicts, continuing...')
+            
+            # Push to remote
             origin.push()
             print('pushed changes')
         else:
