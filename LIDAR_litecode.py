@@ -12,29 +12,41 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO_PIN, GPIO.IN)
 
 def get_distance_pwm():
-    # Wait for the pulse to start
+    # Maximum time to wait for a pulse phase (e.g., 0.05 seconds)
+    TIMEOUT_LIMIT = 0.05 
+    
+    # 1. Wait for pulse to start (Go HIGH)
+    watchdog_start = time.time()
     while GPIO.input(GPIO_PIN) == GPIO.LOW:
-        pass
+        if (time.time() - watchdog_start) > TIMEOUT_LIMIT:
+            return None # Out of range or sensor disconnected
+            
     start_time = time.time()
     
-    # Wait for the pulse to end
+    # 2. Wait for pulse to end (Go LOW)
     while GPIO.input(GPIO_PIN) == GPIO.HIGH:
-        pass
+        if (time.time() - start_time) > TIMEOUT_LIMIT:
+            return None # Pulse lasted too long / error
+            
     end_time = time.time()
     
     # Calculate pulse duration in seconds
     pulse_duration = end_time - start_time
     
-    # 10us = 1cm -> 1us = 0.1cm -> duration in s * 100,000 cm
-    # Simplified: (duration * 1000000) / 10
-    distance = pulse_duration * 100000
-    
-    return distance
+    # Conversion: duration in s * 100,000 cm/s
+    distance_cm = pulse_duration * 100000
+    return distance_cm
 
 try:
     while True:
         dist = get_distance_pwm()
-        print(f"Distance: {dist:.2f} cm")
-        time.sleep(0.01) # Small delay
+        if dist is None:
+            print("Distance: Out of Range (>131 ft) or Signal Lost")
+        else:
+            dist_feet = (dist / 2.54) / 12  # Convert cm to feet
+            print(f"Distance: {dist:.2f} cm ({dist_feet:.1f} ft)")
+            
+        time.sleep(0.05) # Increased delay to prevent CPU overheating in flight
+        
 except KeyboardInterrupt:
     GPIO.cleanup()
